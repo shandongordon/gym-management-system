@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><title>Shared fragments</title></head>
+<body>
+<header th:fragment="topbar" class="topbar">
+    <a class="brand" th:href="@{/dashboard}" aria-label="Elevate Fitness dashboard">
+        <span class="brand-logo">LOGO</span>
+        <span>Elevate Fitness</span>
+    </a>
+    <div class="topbar-right">
+        <span class="avatar" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="7.4" r="4" fill="currentColor"/><path d="M4.5 21c.2-4.6 3-7.2 7.5-7.2s7.3 2.6 7.5 7.2" fill="currentColor"/></svg>
+        </span>
+        <span class="employee-name" th:text="${employeeName}">FName LName</span>
+        <form class="logout-form" th:action="@{/logout}" method="post">
+            <button type="submit" class="logout-button">Logout</button>
+        </form>
+    </div>
+</header>
+<aside th:fragment="sidebar(active)" class="sidebar" aria-label="Main navigation">
+    <nav>
+        <a th:href="@{/dashboard}" class="sidebar-link" th:classappend="${active == 'dashboard'} ? ' active' : ''">
+            <svg><use href="/images/icons.svg#home"></use></svg><span>Dashboard</span>
+        </a>
+        <a th:href="@{/members}" class="sidebar-link" th:classappend="${active == 'members'} ? ' active' : ''">
+            <svg><use href="/images/icons.svg#members"></use></svg><span>Members</span>
+        </a>
+        <span class="sidebar-link disabled" aria-disabled="true" title="Not in Deliverable 5 prototype">
+            <svg><use href="/images/icons.svg#calendar"></use></svg><span>Classes</span>
+        </span>
+        <span class="sidebar-link disabled" aria-disabled="true" title="Not in Deliverable 5 prototype">
+            <svg><use href="/images/icons.svg#trainer"></use></svg><span>Trainers</span>
+        </span>
+        <span class="sidebar-link disabled" aria-disabled="true" title="Not in Deliverable 5 prototype">
+            <svg><use href="/images/icons.svg#payments"></use></svg><span>Payments</span>
+        </span>
+        <span class="sidebar-link disabled" aria-disabled="true" title="Not in Deliverable 5 prototype">
+            <svg><use href="/images/icons.svg#reports"></use></svg><span>Reports</span>
+        </span>
+        <span class="sidebar-link disabled" aria-disabled="true" title="Not in Deliverable 5 prototype">
+            <svg><use href="/images/icons.svg#settings"></use></svg><span>Settings</span>
+        </span>
+    </nav>
+</aside>
+</body>
+</html>
