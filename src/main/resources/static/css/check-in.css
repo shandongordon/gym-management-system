@@ -1,0 +1,47 @@
+/* Attendance & Check-In screen (Member 3). Builds on styles.css. */
+.verify-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px}
+.verify-column-right{border-left:1px solid var(--border);padding-left:28px}
+.verify-field{display:flex;justify-content:space-between;align-items:center;gap:14px;min-height:48px;border-bottom:1px solid var(--border);font-size:13px}
+.verify-label{font-weight:700}
+.status-pill{display:inline-block;min-width:92px;text-align:center;padding:4px 14px;border-radius:999px;font-weight:700;font-size:12px}
+.pill-good{background:#dcf5e3;color:#1c6b3a}
+.pill-warn{background:#fef0c7;color:#8a4b0b}
+.pill-bad{background:#fde2e2;color:#a42626}
+.expiration-line{font-size:12px;margin:10px 0 0}
+.warning-box{display:flex;align-items:center;gap:18px;margin-top:16px;padding:14px 20px;background:#fff8e6;border:1px solid #f3d38a;border-radius:6px}
+.warning-icon{width:40px;height:40px;flex:0 0 40px;color:#f0a30a}
+.warning-title{font-weight:700;font-size:14px;color:#6b3a0a;margin-bottom:4px}
+.warning-box ul{margin:0;padding-left:18px;font-size:13px}
+.warning-box li::marker{color:#f0a30a}
+.clear-box{margin-top:16px;padding:12px 18px;background:#f0fff5;border:1px solid #afdbc0;border-radius:6px;color:#28683f;font-weight:600;font-size:13px}
+.decision-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:12px;margin-top:22px}
+.decision-actions form{margin:0}
+.decision-actions .btn-primary-app,.decision-actions .btn-outline-app{min-width:140px}
+.btn-outline-blue{border-color:var(--button);color:var(--button)}
+.btn-outline-blue:hover{background:#eef4fd;color:var(--button)}
+.btn-primary-app:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary-app:disabled:hover{background:var(--button)}
+.btn-danger-app{background:#b3261e;border-color:#b3261e}
+.btn-danger-app:hover{background:#8f1d17}
+.approve-hint{text-align:right;font-size:12px;margin:9px 0 0}
+.deny-form{max-width:460px;margin:18px 0 0 auto;padding:18px;border:1px solid var(--border);border-radius:6px;background:#fafbfc}
+.deny-form select{display:block;width:100%;border:1px solid #cbd3dc;border-radius:4px;padding:10px 12px;min-height:43px;background:#fff;color:#202a34;font:inherit;margin-bottom:14px}
+.deny-form select:focus{outline:2px solid #85aff5;outline-offset:0;border-color:#3f83db}
+.label-note{font-weight:400}
+.deny-error{color:#a42626;font-size:13px;margin:10px 0 0}
+.deny-actions{justify-content:flex-end;margin-top:14px}
+.result-box{margin-top:18px;padding:16px 20px;border-radius:6px}
+.result-box h3{font-size:16px;font-weight:700;margin:0 0 4px}
+.result-box p{margin:0 0 14px;font-size:13px}
+.result-approved{background:#f0fff5;border:1px solid #afdbc0;color:#28683f}
+.result-denied{background:#fff5f4;border:1px solid #e8b5b2;color:#9b2727}
+.history-table td:last-child{text-align:left}
+.history-table form{margin:0}
+.denied-note{color:#a42626}
+.history-empty{font-size:13px;margin:14px 0 0}
+.not-found-text{margin-bottom:20px}
+@media(max-width:700px){
+ .verify-grid{grid-template-columns:1fr}.verify-column-right{border-left:0;padding-left:0}
+ .decision-actions{justify-content:stretch}.decision-actions form,.decision-actions .btn-primary-app,.decision-actions .btn-outline-app{width:100%}
+ .deny-form{max-width:none}
+}

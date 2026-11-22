@@ -62,7 +62,7 @@ Open **http://localhost:8080/login**. Press `Ctrl+C` to stop the app.
 | `frontdesk` | `Elevate123!` |
 | `manager` | `Manager123!` |
 
-The app automatically seeds 12 fictional members from *Jujutsu Kaisen* and *Fairy Tail* when the members table is empty. Try searching `Gojo`, `Natsu`, or `1001`.
+The app automatically seeds 12 fictional members from *Jujutsu Kaisen* and *Fairy Tail* when the members table is empty, plus member `1013` (active, payment pending) for check-in testing. Try searching `Gojo`, `Natsu`, or `1001`.
 
 ## Implemented features
 
@@ -70,8 +70,28 @@ The app automatically seeds 12 fictional members from *Jujutsu Kaisen* and *Fair
 - Dashboard and member search by ID or name
 - Empty/invalid input handling and no-results messages
 - Member selection handoff for membership verification
+- Membership verification: status, payment status, last check-in, and verification warnings
+- Approve or deny check-in, with a required reason for a denial
+- Attendance recording, attendance history per member, and check-out
 
-**Still in development:** membership verification, approve/deny check-in, and attendance recording (another team member's portion).
+### Membership verification and check-in
+
+Search for a member, choose **Select Member**, then **Verify Membership & Check-In**. The screen is at `/members/{memberId}/check-in`.
+
+| Member | Membership | Payment | Result |
+| --- | --- | --- | --- |
+| `1004` Satoru Gojo | Active | Paid | No warnings; check-in can be approved |
+| `1013` Gajeel Redfox | Active | Pending | Warning: payment pending; check-in can still be approved |
+| `1002` Megumi Fushiguro | Expired | Pending | Warnings: membership expired, payment pending; approve unavailable |
+| `1003` Nobara Kugisaki | Suspended | Paid | Warning: membership suspended; approve unavailable |
+
+Rules:
+
+- A membership also counts as expired once its expiration date has passed.
+- Check-in can be approved only for an active membership whose member is not already checked in.
+- A pending payment is a warning only; the employee decides.
+- A denial requires a reason, and the reason "Other" also requires notes.
+- Every decision is saved in the `attendance_records` table, which JPA creates on first start.
 
 ## Tests
 
@@ -79,4 +99,4 @@ The app automatically seeds 12 fictional members from *Jujutsu Kaisen* and *Fair
 mvn clean test
 ```
 
-Tests cover login, member search, access protection, and member selection. They use an in-memory test database, so MySQL is not required for running tests. The running application uses MySQL.
+Tests cover login, member search, access protection, member selection, membership verification, approve/deny check-in, and attendance recording. They use an in-memory test database, so MySQL is not required for running tests. The running application uses MySQL.

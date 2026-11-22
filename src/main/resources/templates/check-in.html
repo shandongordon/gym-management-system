@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Attendance &amp; Check-In | Elevate Fitness</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css"/>
+    <link rel="stylesheet" th:href="@{/css/check-in.css}" href="/css/check-in.css"/>
+    <script defer th:src="@{/js/check-in.js}" src="/js/check-in.js"></script>
+</head>
+<body>
+<div th:replace="~{fragments/layout :: topbar}"></div>
+<div class="app-body">
+    <div th:replace="~{fragments/layout :: sidebar('members')}"></div>
+    <main class="main-content">
+        <h1 class="page-title">Attendance &amp; Check-In</h1>
+
+        <!-- Error or check-out message from the previous action -->
+        <p th:if="${resultType == 'error'}" class="alert-message error" role="alert" th:text="${resultMessage}">Error message</p>
+        <p th:if="${resultType == 'checkout'}" class="alert-message success" role="status" th:text="${resultMessage}">Check-out message</p>
+
+        <!-- Member not found -->
+        <section th:unless="${memberFound}" class="content-card">
+            <h2>Member not found</h2>
+            <p class="muted not-found-text">No member exists with ID <strong th:text="${requestedMemberId}">0000</strong>. Check the ID and search again.</p>
+            <div class="actions"><a class="btn-primary-app" th:href="@{/members}">Back to Search</a></div>
+        </section>
+
+        <!-- Membership Verification -->
+        <section th:if="${memberFound}" class="content-card"
+                 th:with="decided=${resultType == 'approved' or resultType == 'denied'}">
+            <h2>Membership Verification</h2>
+
+            <div class="verify-grid">
+                <div class="verify-column">
+                    <div class="verify-field"><span class="verify-label">Member ID</span><span th:text="${member.memberId}">1001</span></div>
+                    <div class="verify-field"><span class="verify-label">Full Name</span><span th:text="${member.fullName}">Yuji Itadori</span></div>
+                    <div class="verify-field"><span class="verify-label">Membership Plan</span><span th:text="${member.membershipPlan}">Monthly Membership</span></div>
+                </div>
+                <div class="verify-column verify-column-right">
+                    <div class="verify-field"><span class="verify-label">Membership Status</span><span id="membership-status" class="status-pill" th:classappend="${statusClass}" th:text="${status}">Active</span></div>
+                    <div class="verify-field"><span class="verify-label">Payment Status</span><span id="payment-status" class="status-pill" th:classappend="${paymentClass}" th:text="${member.paymentStatus}">Paid</span></div>
+                    <div class="verify-field"><span class="verify-label">Last Check-In</span><span th:text="${lastCheckIn}">2026-11-20 08:42</span></div>
+                </div>
+            </div>
+            <p class="muted expiration-line">Expiration Date: <span th:text="${member.expirationDate}">2026-11-30</span></p>
+
+            <!-- Before a decision: warnings and the decision buttons -->
+            <div th:unless="${decided}">
+                <div th:if="${!warnings.isEmpty()}" id="verification-warnings" class="warning-box">
+                    <svg class="warning-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 20h20L12 3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 10v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17.6" r="1" fill="currentColor"/></svg>
+                    <div>
+                        <div class="warning-title">Verification Warnings</div>
+                        <ul>
+                            <li th:each="warning : ${warnings}" th:text="${warning}">Membership expired</li>
+                        </ul>
+                    </div>
+                </div>
+                <p th:if="${warnings.isEmpty()}" id="verification-clear" class="clear-box">No verification warnings. Member is eligible to check in.</p>
+
+                <div class="decision-actions">
+                    <form th:action="@{/members/{id}/check-in/approve(id=${member.memberId})}" method="post">
+                        <button id="approve-button" type="submit" class="btn-primary-app" th:disabled="${!canApprove}">Approve Check-In</button>
+                    </form>
+                    <button id="deny-button" type="button" class="btn-outline-app btn-outline-blue">Deny Check-In</button>
+                    <a class="btn-outline-app btn-outline-blue" th:href="@{/members}">Back</a>
+                </div>
+                <p th:if="${approveHint != null}" id="approve-hint" class="muted approve-hint" th:text="${approveHint}">Approve Check-In is unavailable.</p>
+
+                <form id="deny-form" class="deny-form" method="post" hidden novalidate
+                      th:action="@{/members/{id}/check-in/deny(id=${member.memberId})}">
+                    <label for="deny-reason">Reason for denial</label>
+                    <select id="deny-reason" name="reason">
+                        <option value="">Select a reason...</option>
+                        <option th:each="reason : ${denialReasons}" th:value="${reason}" th:text="${reason}"
+                                th:selected="${reason == suggestedReason}">Membership expired</option>
+                    </select>
+                    <label for="deny-notes">Notes <span class="muted label-note">(required for "Other")</span></label>
+                    <input id="deny-notes" name="notes" type="text" maxlength="120" autocomplete="off"/>
+                    <p id="deny-error" class="deny-error" role="alert" hidden></p>
+                    <div class="actions deny-actions">
+                        <button type="submit" class="btn-primary-app btn-danger-app">Confirm Denial</button>
+                        <button id="deny-cancel" type="button" class="btn-outline-app">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- After a decision: the result -->
+            <div th:if="${decided}" id="decision-result" class="result-box" role="status"
+                 th:classappend="${resultType == 'approved'} ? 'result-approved' : 'result-denied'">
+                <h3 th:text="${resultType == 'approved'} ? 'Check-In Approved' : 'Check-In Denied'">Check-In Approved</h3>
+                <p th:text="${resultMessage}">The visit has been recorded.</p>
+                <a class="btn-primary-app" th:href="@{/members}">Next Member</a>
+            </div>
+        </section>
+
+        <!-- Attendance History -->
+        <section th:if="${memberFound}" class="content-card results-card">
+            <h2>Attendance History</h2>
+            <div class="table-scroll">
+                <table class="members-table history-table">
+                    <thead><tr><th>Date</th><th>Check-In Time</th><th>Check-Out Time</th><th>Notes</th></tr></thead>
+                    <tbody id="history-body">
+                    <tr th:each="record : ${history}">
+                        <td th:text="${record.dateText}">11/22/2026</td>
+                        <td th:text="${record.checkInText}">8:42 AM</td>
+                        <td>
+                            <form th:if="${openVisitId != null and record.id == openVisitId}" method="post"
+                                  th:action="@{/members/{id}/check-in/{recordId}/check-out(id=${member.memberId},recordId=${record.id})}">
+                                <button type="submit" class="btn-outline-app btn-outline-blue btn-small">Record Check-Out</button>
+                            </form>
+                            <span th:unless="${openVisitId != null and record.id == openVisitId}" th:text="${record.checkOutText}">10:15 AM</span>
+                        </td>
+                        <td th:text="${record.notes}" th:classappend="${record.approved} ? '' : 'denied-note'">Approved by Front Desk Employee</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p th:if="${history.isEmpty()}" id="history-empty" class="muted history-empty">No attendance records for this member.</p>
+        </section>
+    </main>
+</div>
+</body>
+</html>
