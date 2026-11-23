@@ -19,7 +19,9 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
-                .requestMatchers("/dashboard", "/members", "/members/*/selected", "/api/members", "/api/members/**")
+                .requestMatchers("/dashboard", "/members", "/members/*/selected",
+                        "/members/*/check-in", "/members/*/check-in/**",
+                        "/api/members", "/api/members/**")
                     .hasAnyRole("FRONT_DESK", "MANAGER", "ADMIN")
                 .anyRequest().authenticated()
             )

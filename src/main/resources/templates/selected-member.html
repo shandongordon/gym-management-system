@@ -20,8 +20,11 @@
                 <div><span class="field-caption">Email:</span><span th:text="${member.email}">yuji.itadori@example.test</span></div>
                 <div><span class="field-caption">Phone Number:</span><span th:text="${member.phoneNumber}">305-555-0101</span></div>
             </div>
-            <p class="handoff-note"><strong>Integration handoff:</strong> This member is selected. The next phase is Membership Verification and Attendance &amp; Check-In, developed by Member 3.</p>
-            <div class="actions"><a class="btn-outline-app" th:href="@{/members}">Back to Search</a></div>
+            <p class="handoff-note">Continue to verify this member's membership and record the check-in.</p>
+            <div class="actions">
+                <a class="btn-primary-app" th:href="@{/members/{id}/check-in(id=${member.memberId})}">Verify Membership &amp; Check-In</a>
+                <a class="btn-outline-app" th:href="@{/members}">Back to Search</a>
+            </div>
         </section>
     </main>
 </div>

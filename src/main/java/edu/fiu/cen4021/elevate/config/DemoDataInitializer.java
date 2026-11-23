@@ -50,6 +50,12 @@ public class DemoDataInitializer {
                         member("1012", "Juvia Lockser", "juvia.lockser", "Annual Membership", "Suspended", "2026-02-01", "2027-01-31", "Pending", "2026-10-25 11:02")
                 ));
             }
+
+            // Check-in test data (Member 3): an active member whose payment is pending.
+            // Added by ID so databases seeded before this record existed also receive it.
+            if (!members.existsById("1013")) {
+                members.save(member("1013", "Gajeel Redfox", "gajeel.redfox", "Annual Membership", "Active", "2026-10-01", "2027-09-30", "Pending", null));
+            }
         };
     }
 

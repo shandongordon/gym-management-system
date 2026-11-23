@@ -71,4 +71,7 @@ public class Member {
     public String getExpirationDate() { return expirationDate; }
     public String getPaymentStatus() { return paymentStatus; }
     public String getLastCheckIn() { return lastCheckIn; }
+
+    /** Updated by Member 3's check-in component when a check-in is approved. */
+    public void setLastCheckIn(String lastCheckIn) { this.lastCheckIn = lastCheckIn; }
 }
